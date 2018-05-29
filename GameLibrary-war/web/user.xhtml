@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <ui:composition template="/resources/templates/authenticatedTemplate.xhtml">
+            <ui:define name="top">
+                <h:outputText value="#{userBean.user.name}"/>
+                <h:outputScript library="js" name="authFormAutoUpdate.js"/>
+            </ui:define>
+            <ui:define name="authenticatedContent">
+                <h:panelGrid columns="3" styleClass="cellTopAlign">
+                    <h:panelGrid columns="1" class="topAlign" >
+                        <h:panelGroup>
+                            <h:outputText value="#{bundle.UserJoinedLabel}"/>
+                            <h:outputText value="#{userBean.user.creationDate}" >
+                                <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                            </h:outputText>
+                        </h:panelGroup>
+                        <h:outputText
+                            value="#{bundle.UserAdminLabel}"
+                            rendered="#{userBean.user.isAdmin}"
+                            style="color : red;"/>
+                        <h:commandButton
+                            value="#{bundle.UserMakeAdmin}"
+                            rendered="#{authenticationBean.user.isAdmin and not userBean.user.isAdmin}"
+                            action="#{userBean.makeAdmin}"/>
+                        <h:outputText
+                            value="#{bundle.UserDistributorLabel}"
+                            rendered="#{userBean.user.isGameDistributor}"
+                            style="color : green;"/>
+                        <h:commandButton
+                            value="#{bundle.UserMakeDistributor}"
+                            rendered="#{authenticationBean.user.isAdmin and not userBean.user.isGameDistributor}"
+                            action="#{userBean.makeDistributor}"/>
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" class="border">
+                        <h:outputLabel value="#{bundle.PlayedGamesLabel}"/>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="#{bundle.SortByLabel}" for="sortUser" />
+                            <h:selectOneMenu
+                                id="sortPlayedGames"
+                                label="sortUser"
+                                value="#{userPlayedGamesBean.comparatorName}"
+                                onchange="submit()">
+                                <f:selectItem itemLabel="#{bundle.SortByDateJoinedLabel}" itemValue="date"/>
+                                <f:selectItem itemLabel="#{bundle.SortByNameLabel}" itemValue="name"  />
+                            </h:selectOneMenu>
+
+                        </h:panelGrid>
+                        <h:dataTable value="#{userPlayedGamesBean.items}" var="item" border="0" cellpadding="2" cellspacing="0" rules="all" style="border:solid 1px">
+                            <h:column headerClass="nameColumn">
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.GameTitleLabel}"/>
+                                </f:facet>
+                                <h:commandLink value="#{item.name}" action="#{userPlayedGamesBean.itemSelected}"/>
+
+                            </h:column>
+                        </h:dataTable>
+                    </h:panelGrid>
+                    <h:panelGrid columns="1"
+                                 class="border"
+                                 rendered="#{userBean.user.isGameDistributor}">
+                        <h:outputLabel value="#{bundle.DistributedGamesLabel}"/>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="#{bundle.SortByLabel}" for="sortUser" />
+                            <h:selectOneMenu
+                                id="sortDistributedGames"
+                                label="sortDistributedGames"
+                                value="#{userDistributedGamesBean.comparatorName}"
+                                onchange="submit()">
+                                <f:selectItem itemLabel="#{bundle.SortByDateJoinedLabel}" itemValue="date"/>
+                                <f:selectItem itemLabel="#{bundle.SortByNameLabel}" itemValue="name"  />
+                            </h:selectOneMenu>
+
+                        </h:panelGrid>
+                        <h:dataTable value="#{userDistributedGamesBean.items}" var="item" border="0" cellpadding="2" cellspacing="0" rules="all" style="border:solid 1px">
+                            <h:column headerClass="nameColumn">
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.GameTitleLabel}"/>
+                                </f:facet>
+                                <h:commandLink value="#{item.name}" action="#{userDistributedGamesBean.itemSelected}"/>
+                            </h:column>
+                        </h:dataTable>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      >
+    <h:body>
+        <ui:composition template="/resources/templates/authenticatedTemplate.xhtml">
+            <ui:define name="top">
+                <h:outputText value="#{bundle.WelcomeTitle}"/>
+                <h:outputScript library="js" name="authFormAutoUpdate.js"/>
+            </ui:define>
+            <ui:define name="authenticatedContent">
+                <h:panelGrid columns="4" styleClass="cellTopAlign">
+                    <h:panelGrid columns="1" class="border">
+                        <h:outputLabel value="#{bundle.MyGamesLabel}"/>
+                        <h:panelGroup>
+                            <h:outputLabel value="#{bundle.SortByLabel}"/>
+                            <h:selectOneMenu
+                                value="#{authUserPlayedGames.comparatorName}"
+                                onchange="submit()">
+                                <f:selectItem itemLabel="#{bundle.SortByDateJoinedLabel}" itemValue="date"/>
+                                <f:selectItem itemLabel="#{bundle.SortByNameLabel}" itemValue="name"  />
+                            </h:selectOneMenu>
+                        </h:panelGroup>
+                        <h:dataTable value="#{authUserPlayedGames.items}" var="item" border="0" cellpadding="2" cellspacing="0" rules="all" style="border:solid 1px">
+                            <h:column headerClass="nameColumn">
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.GameTitleLabel}"/>
+                                </f:facet>
+                                <h:panelGroup>
+                                    <h:commandLink value="#{item.name}" action="#{authUserPlayedGames.itemSelected}"/>
+
+                                </h:panelGroup>
+
+                            </h:column>
+                        </h:dataTable>
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" rendered="#{authenticationBean.user.isGameDistributor}" class="border">
+                        <h:outputLabel value="#{bundle.AuthUserDistributedGamesLabel}"/>
+                        
+                            <h:panelGroup>
+                                <h:outputLabel value="#{bundle.SortByLabel}" for="sortDistributedGames" />
+                                <h:selectOneMenu
+                                    id="sortDistributedGames"
+                                    label="sortDistributedGames"
+                                    value="#{authUserDistributedGamesListBean.comparatorName}"
+                                    onchange="submit()">
+                                    <f:selectItem itemLabel="#{bundle.SortByDateJoinedLabel}" itemValue="date"/>
+                                    <f:selectItem itemLabel="#{bundle.SortByNameLabel}" itemValue="name"  />
+                                </h:selectOneMenu>
+                            </h:panelGroup>
+                            <h:dataTable id="distributedGames" value="#{authUserDistributedGamesListBean.items}" var="item" border="0" cellpadding="2" cellspacing="0" rules="all" style="border:solid 1px">
+                                <h:column headerClass="nameColumn">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{bundle.GameTitleLabel}"/>
+                                    </f:facet>
+                                    <h:panelGroup>
+                                        <h:commandLink value="#{item.name}" action="#{authUserDistributedGamesListBean.itemSelected}"/>
+
+                                    </h:panelGroup>
+
+                                </h:column>
+                            </h:dataTable>
+                        <h:commandLink value="#{bundle.CreateGameLabel}" action="#{gameEditBean.createGame}" />
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" class="border">
+                        <h:outputLabel value="#{bundle.NotPlayedGamesLabel}"/>
+                        <h:panelGroup>
+                            <h:outputLabel value="#{bundle.SortByLabel}"/>
+                            <h:selectOneMenu
+                                value="#{authUserNotPlayedGamesBean.comparatorName}"
+                                onchange="submit()">
+                                <f:selectItem itemLabel="#{bundle.SortByDateJoinedLabel}" itemValue="date"/>
+                                <f:selectItem itemLabel="#{bundle.SortByNameLabel}" itemValue="name"  />
+                            </h:selectOneMenu>
+                        </h:panelGroup>
+                        <h:dataTable value="#{authUserNotPlayedGamesBean.items}" var="item" border="0" cellpadding="2" cellspacing="0" rules="all" style="border:solid 1px">
+                            <h:column headerClass="nameColumn">
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.GameTitleLabel}"/>
+                                </f:facet>
+                                <h:panelGroup>
+                                    <h:commandLink value="#{item.name}" action="#{authUserNotPlayedGamesBean.itemSelected}"/>
+                                </h:panelGroup>
+                            </h:column>
+                        </h:dataTable>
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" rendered="#{authenticationBean.user.isAdmin}" class="border">
+                        <h:outputLabel value="#{bundle.AllUsersLabel}"/>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="#{bundle.SortByLabel}" for="sortUser" />
+                            <h:selectOneMenu
+                                id="sortUser"
+                                label="sortUser"
+                                value="#{allUsersListBean.comparatorName}"
+                                onchange="submit()">
+                                <f:selectItem itemLabel="#{bundle.SortByDateJoinedLabel}" itemValue="date"/>
+                                <f:selectItem itemLabel="#{bundle.SortByNameLabel}" itemValue="name"  />
+                            </h:selectOneMenu>
+
+                        </h:panelGrid>
+                        <h:dataTable id="users" value="#{allUsersListBean.items}" var="item" border="0" cellpadding="2" cellspacing="0" rules="all" style="border:solid 1px">
+                            <h:column headerClass="nameColumn">
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.UsernameLabel}"/>
+                                </f:facet>
+                                <h:panelGroup>
+                                    <h:commandLink value="#{item.name}" action="#{allUsersListBean.itemSelected}"/>
+                                    <h:outputText value="#{bundle.UserAdminSymbol}" rendered="#{item.isAdmin}"/>
+                                    <h:outputText value="#{bundle.UserDistributorSymbol}" rendered="#{item.isGameDistributor}"/>
+                                </h:panelGroup>
+
+                            </h:column>
+                        </h:dataTable>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </ui:define>
+            <ui:define name="bottom">
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

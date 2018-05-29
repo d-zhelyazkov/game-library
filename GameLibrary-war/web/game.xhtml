@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <ui:composition template="/resources/templates/authenticatedTemplate.xhtml">
+            <ui:define name="top">
+                <h:outputText value="#{gameBean.game.name}"/>
+                <h:outputScript library="js" name="authFormAutoUpdate.js"/>
+            </ui:define>
+            <ui:define name="authenticatedContent">
+                
+                <h:panelGrid columns="4" styleClass="cellTopAlign">
+                    <h:panelGrid columns="1">
+                        <h:panelGrid columns="2" border="1" cellpadding="10">
+                            <h:outputText value = "#{bundle.GameDescriptionLabel}"/>
+                            <h:inputTextarea disabled="true" value="#{gameBean.game.description}"/>
+
+                            <h:outputText value="#{bundle.GameCreationDateLabel}"/>
+                            <h:outputText value="#{gameBean.game.creationDate}" >
+                                <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                            </h:outputText>
+
+                            <h:outputText value="#{bundle.GameDistributorLabel}"/>
+                            <h:commandLink value="#{gameBean.game.distributor.name} " action="#{gameBean.displayDistributor}"/>
+                        </h:panelGrid>
+                        <h:commandLink
+                            value="#{bundle.GameEditLabel}"
+                            rendered="#{gameBean.isAuthUserDistributor}"
+                            action="#{gameBean.edit}"/>
+                        <h:commandButton
+                            value="#{bundle.GameAddLabel}"
+                            rendered="#{not gameBean.authUserPlayThisGame}"
+                            action="#{gameBean.addGame}"/>
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" class="border">
+                        <h:outputLabel value="#{bundle.GamePlayersLabel}"/>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="#{bundle.SortByLabel}" for="sortPlayers" />
+                            <h:selectOneMenu
+                                id="sortPlayers"
+                                label="sortPlayers"
+                                value="#{gamePlayersBean.comparatorName}"
+                                onchange="submit()">
+                                <f:selectItem itemLabel="#{bundle.SortByDateJoinedLabel}" itemValue="date"/>
+                                <f:selectItem itemLabel="#{bundle.SortByNameLabel}" itemValue="name"  />
+                            </h:selectOneMenu>
+                        </h:panelGrid>
+                        <h:dataTable id="players" value="#{gamePlayersBean.items}" var="item" border="0" cellpadding="2" cellspacing="0" rules="all" style="border:solid 1px">
+                            <h:column headerClass="nameColumn">
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.UsernameLabel}"/>
+                                </f:facet>
+                                <h:commandLink value="#{item.name}" action="#{gamePlayersBean.itemSelected}"/>
+                            </h:column>
+                        </h:dataTable>
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" class="border">
+                        <h:outputLabel value="#{bundle.GameHighscoresLabel}"/>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="#{bundle.HighscoresCountLabel}"/>
+                            <h:selectOneMenu
+                                value="#{gameHighscoresBean.max}"
+                                onchange="submit()">
+                                <f:selectItem itemLabel="10" itemValue="10"/>
+                                <f:selectItem itemLabel="20" itemValue="20"/>
+                                <f:selectItem itemLabel="50" itemValue="50"/>
+                                <f:selectItem itemLabel="100" itemValue="100"/>
+                            </h:selectOneMenu>
+                        </h:panelGrid>
+                        <h:dataTable value="#{gameHighscoresBean.items}" var="item" border="0" cellpadding="2" cellspacing="0" rules="all" style="border:solid 1px">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.ScoreLabel}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.scoreValue}"/>
+                            </h:column>
+                            <h:column headerClass="nameColumn">
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.UsernameLabel}"/>
+                                </f:facet>
+                                <h:commandLink value="#{item.userData.user.name}" action="#{gameHighscoresBean.userSelected}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.DateLabel}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.creationDate}">
+                                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                                </h:outputText>
+                            </h:column>
+                        </h:dataTable>
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" class="border" rendered="#{gameBean.authUserPlayThisGame}">
+                        <h:outputLabel value="#{bundle.UserHighscoresLabel}"/>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="#{bundle.HighscoresCountLabel}"/>
+                            <h:selectOneMenu
+                                value="#{authUserGameHighscores.max}"
+                                onchange="submit()">
+                                <f:selectItem itemLabel="10" itemValue="10"/>
+                                <f:selectItem itemLabel="20" itemValue="20"/>
+                                <f:selectItem itemLabel="50" itemValue="50"/>
+                                <f:selectItem itemLabel="100" itemValue="100"/>
+                            </h:selectOneMenu>
+                        </h:panelGrid>
+                        <h:dataTable value="#{authUserGameHighscores.items}" var="item" border="0" cellpadding="2" cellspacing="0" rules="all" style="border:solid 1px">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.ScoreLabel}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.scoreValue}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.DateLabel}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.creationDate}">
+                                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                                </h:outputText>
+                            </h:column>
+                        </h:dataTable>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

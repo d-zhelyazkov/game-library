@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <ui:composition template="/resources/templates/authenticatedTemplate.xhtml">
+            <ui:define name="top">
+                <h:outputText value="#{bundle.EditGameLabel}"/>
+            </ui:define>
+            <ui:define name="authenticatedContent">
+                <h:outputText value="#{bundle.EditGameNoDistributorLabel}" rendered="#{not authenticationBean.user.isGameDistributor}"/>
+                <h:panelGrid columns="3">
+
+                    <h:outputLabel value="#{bundle.GameTitleLabel}" for="title"/>
+                    <h:inputText id="title" value="#{gameEditBean.gameTitle}">
+                        <f:validator validatorId="emptyStringValidator"/>
+                    </h:inputText>
+                    <h:message for="title" />
+
+                    <h:outputLabel value="#{bundle.GameDescriptionLabel}" for="description"/>
+                    <h:inputTextarea id="description" value="#{gameEditBean.descritpion}">
+                        <f:validator validatorId="emptyStringValidator"/>
+                    </h:inputTextarea>
+                    <h:message for="description" />
+
+                    <h:commandButton value="#{bundle.GameSaveLabel}" action="#{gameEditBean.save}"/>
+                    <h:outputText value="#{gameEditBean.message}"/>
+                </h:panelGrid>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+
